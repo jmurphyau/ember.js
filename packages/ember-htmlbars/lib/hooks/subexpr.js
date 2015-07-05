@@ -15,7 +15,14 @@ export default function subexpr(env, scope, helperName, params, hash) {
   // the subexpr hook upstream in HTMLBars.
   var keyword = env.hooks.keywords[helperName];
   if (keyword) {
-    return keyword(null, env, scope, params, hash, null, null);
+    if (keyword.subexprRender) {
+      return keyword.subexprRender(env, scope, params, hash);
+    }
+
+    if (typeof keyword === 'function') {
+      return keyword(null, env, scope, params, hash, null, null);
+    }
+
   }
 
   var label = labelForSubexpr(params, hash, helperName);
